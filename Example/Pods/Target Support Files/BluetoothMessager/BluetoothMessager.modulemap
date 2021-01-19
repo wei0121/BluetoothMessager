@@ -1,0 +1,6 @@
+framework module BluetoothMessager {
+  umbrella header "BluetoothMessager-umbrella.h"
+
+  export *
+  module * { export * }
+}

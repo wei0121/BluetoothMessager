@@ -1,0 +1,16 @@
+PODS:
+  - BluetoothMessager (0.1.0)
+
+DEPENDENCIES:
+  - BluetoothMessager (from `../`)
+
+EXTERNAL SOURCES:
+  BluetoothMessager:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  BluetoothMessager: fd64ff83b9e49019b56a7d6f7cdf25798e52ec7f
+
+PODFILE CHECKSUM: 60b50aefe8aee9f14fbb362e6f36073c1746b5a4
+
+COCOAPODS: 1.9.3

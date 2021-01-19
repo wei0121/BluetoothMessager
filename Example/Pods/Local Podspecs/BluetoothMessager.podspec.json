@@ -1,0 +1,23 @@
+{
+  "name": "BluetoothMessager",
+  "version": "0.1.0",
+  "summary": "A short description of BluetoothMessager.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/weiren/BluetoothMessager",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "weiren": "xwr0121@163.com"
+  },
+  "source": {
+    "git": "https://github.com/weiren/BluetoothMessager.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "11.0"
+  },
+  "source_files": "BluetoothMessager/Classes/**/*",
+  "public_header_files": "Pod/Classes/BluetoothMessager.swift"
+}
