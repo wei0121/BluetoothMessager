@@ -19,7 +19,8 @@ public struct BluetoothMessagerCentralConfig {
 
 
 public protocol BluetoothMessagerCentralAction {
-    var readyToSendMessage: Bool { get }
+    var activated: Bool { get set }
+    var isReadyToSendMessage: Bool { get }
     func setPeripheralsActivation(peripheral: CBPeripheral, enable: Bool)
     func sendMessage(message: String) throws
 }

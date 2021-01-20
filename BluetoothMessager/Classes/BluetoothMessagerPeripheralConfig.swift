@@ -14,7 +14,8 @@ public struct BluetoothMessagerPeripheralConfig {
 
 }
 public protocol BluetoothMessagerPeripheralAction {
-    var readyToSendMessage: Bool { get }
+    var activated: Bool { get set }
+    var isReadyToSendMessage: Bool { get }
     func sendMessage(message: String)
 }
 

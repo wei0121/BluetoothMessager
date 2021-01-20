@@ -4,7 +4,6 @@ import CoreBluetooth
 class BluetoothMessagerCentral: NSObject {
     
     var config: BluetoothMessagerCentralConfig
-    var isReadyToSendMessage: Bool = false
     var discoveringPeripheral: Bool = false {
         didSet {
             if discoveringPeripheral {
@@ -23,7 +22,7 @@ class BluetoothMessagerCentral: NSObject {
     var avalibleCharacteristics: [CBMessagerCharacteristic] = []
     
 
-
+    private var _activated: Bool = false
     private var centralManager: CBCentralManager!
     init?(config: BluetoothMessagerCentralConfig?) {
         guard config != nil else {
@@ -65,7 +64,15 @@ class BluetoothMessagerCentral: NSObject {
 }
 
 extension BluetoothMessagerCentral: BluetoothMessagerCentralAction {
-    var readyToSendMessage: Bool {
+    var activated: Bool {
+        get {
+            return _activated
+        }
+        set {
+            _activated = newValue
+        }
+    }
+    var isReadyToSendMessage: Bool {
         get {
             // Todo: Check readyToSendMessage
             return false
@@ -184,6 +191,7 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
             DispatchQueue.main.async() {
                 let message = String(data: self.avalibleCharacteristics.find(characteristic: characteristic)!.transferedData, encoding: .utf8)
                 print(message ?? "Empty")
+                self.avalibleCharacteristics.find(characteristic: characteristic)?.transferedData = Data()
                 self.config.didReceiveMessage?(message ?? "Empty")
             }
             
@@ -191,7 +199,6 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
 //            writeData()
         } else {
             avalibleCharacteristics.find(characteristic: characteristic)?.transferedData.append(characteristicData)
-//            transferCharacteristics[characteristic]!.append(characteristicData)
         }
     }
 

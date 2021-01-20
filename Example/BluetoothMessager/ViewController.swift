@@ -89,14 +89,14 @@ class ViewController: UIViewController {
         switch deviceType {
         case .central:
             do {
-                try bluetoothMessager?.central?.sendMessage(message: "send me")
+                try bluetoothMessager?.central?.sendMessage(message: messageTextField.text ?? "None")
             } catch is BluetoothMessagerError {
                 print("Couldn't buy that from the vending machine.")
             } catch {
                 print("Unexpected non-vending-machine-related error: \(error)")
             }
         case .peripheral:
-            bluetoothMessager?.peripheral?.sendMessage(message: "send me")
+            bluetoothMessager?.peripheral?.sendMessage(message: messageTextField.text ?? "None")
         case .none:
             break
         }

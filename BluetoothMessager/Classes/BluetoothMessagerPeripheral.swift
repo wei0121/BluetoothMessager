@@ -15,7 +15,7 @@ class BluetoothMessagerPeripheral: NSObject {
         
         self.peripheralManager = CBPeripheralManager(delegate: self, queue: DispatchQueue(label: BluetoothMessagerPeripheral.bluetoothMessagerPeripheralQueueKey), options: [CBPeripheralManagerOptionShowPowerAlertKey: true])
     }
-    
+    private var _activated: Bool = false
     private var connectedCentral: CBCentral?
     private var transferCharacteristic: CBMutableCharacteristic?
     private var peripheralManager: CBPeripheralManager!
@@ -30,12 +30,23 @@ class BluetoothMessagerPeripheral: NSObject {
         transferService.characteristics = [transferCharacteristic]
         peripheralManager.add(transferService)
         self.transferCharacteristic = transferCharacteristic
+        peripheralManager.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [config.serviceUUID]])
         self.messageData = CBMessagerData(peripheralManager: peripheralManager, transferCharacteristic: transferCharacteristic)
     }
 }
 
 extension BluetoothMessagerPeripheral: BluetoothMessagerPeripheralAction {
-    var readyToSendMessage: Bool {
+    
+    var activated: Bool {
+        get {
+            return _activated
+        }
+        set {
+            _activated = newValue
+        }
+    }
+    
+    var isReadyToSendMessage: Bool {
         get {
             // Todo: Check readyToSendMessage
             return false
