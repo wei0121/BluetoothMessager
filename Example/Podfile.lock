@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BluetoothMessager: fd64ff83b9e49019b56a7d6f7cdf25798e52ec7f
+  BluetoothMessager: 9683c2318507ed62657c4d0d51794cbc4ecc6546
 
 PODFILE CHECKSUM: 60b50aefe8aee9f14fbb362e6f36073c1746b5a4
 

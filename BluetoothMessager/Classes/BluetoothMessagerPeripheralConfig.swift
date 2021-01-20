@@ -4,6 +4,7 @@ import CoreBluetooth
 public struct BluetoothMessagerPeripheralConfig {
     public var serviceUUID: CBUUID
     public var characteristicUUID: CBUUID
+    public var didReceiveMessage: ((String) -> Void)?
     public var didSendMessage: ((Bool, BluetoothMessagerError?) -> Void)?
     
     public init(serviceUUID: CBUUID, characteristicUUID: CBUUID) {
@@ -13,6 +14,7 @@ public struct BluetoothMessagerPeripheralConfig {
 
 }
 public protocol BluetoothMessagerPeripheralAction {
+    var readyToSendMessage: Bool { get }
     func sendMessage(message: String)
 }
 

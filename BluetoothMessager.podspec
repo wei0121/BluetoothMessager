@@ -9,16 +9,9 @@
 Pod::Spec.new do |s|
   s.name             = 'BluetoothMessager'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of BluetoothMessager.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
+  s.summary          = 'A simplified bluetooth library for sending messages between iOS devices'
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+  A simplified bluetooth library for sending messages between iOS devices
                        DESC
 
   s.homepage         = 'https://github.com/weiren/BluetoothMessager'
@@ -29,9 +22,9 @@ TODO: Add long description of the pod here.
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '11.0'
-
+  s.swift_versions = "5.3"
   s.source_files = 'BluetoothMessager/Classes/**/*'
-  s.public_header_files = 'Pod/Classes/BluetoothMessager.swift'
+  # s.public_header_files = 'Pod/Classes/BluetoothMessager.swift'
   
   # s.resource_bundles = {
   #   'BluetoothMessager' => ['BluetoothMessager/Assets/*.png']

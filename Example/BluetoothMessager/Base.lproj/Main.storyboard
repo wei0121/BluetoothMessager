@@ -21,7 +21,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="C7C-c1-1Ek">
-                                <rect key="frame" x="16" y="30" width="343" height="92"/>
+                                <rect key="frame" x="16" y="30" width="343" height="196.5"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="9e2-MR-0gH">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="32"/>
@@ -29,30 +29,98 @@
                                             <segment title="Central"/>
                                             <segment title="Peripheral"/>
                                         </segments>
-                                    </segmentedControl>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGc-M5-wDh">
-                                        <rect key="frame" x="0.0" y="56" width="343" height="36"/>
-                                        <color key="backgroundColor" systemColor="systemGreenColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <state key="normal" title="Start">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
                                         <connections>
-                                            <action selector="startHandler:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="A5G-la-dBB"/>
+                                            <action selector="deviceTypeChangeHandler:" destination="vXZ-lx-hvc" eventType="valueChanged" id="R0l-Uy-eJi"/>
                                         </connections>
-                                    </button>
+                                    </segmentedControl>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="a test message" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KiS-Y7-G6Z">
+                                        <rect key="frame" x="0.0" y="56" width="343" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="XtW-pA-iy2">
+                                        <rect key="frame" x="0.0" y="115" width="343" height="36"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qOH-OA-U8G">
+                                                <rect key="frame" x="0.0" y="0.0" width="165.5" height="36"/>
+                                                <color key="backgroundColor" systemColor="systemGreenColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                <state key="normal" title="Enable">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="enableHandler:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Kda-fT-D1T"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGc-M5-wDh">
+                                                <rect key="frame" x="177.5" y="0.0" width="165.5" height="36"/>
+                                                <color key="backgroundColor" systemColor="systemTealColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                <state key="normal" title="SendMessage">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="sendMessageHandler:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="S6O-7L-rle"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Received Messages:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cUF-Ag-G96">
+                                        <rect key="frame" x="0.0" y="176" width="343" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                             </stackView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="JQy-0b-sMZ">
+                                <rect key="frame" x="0.0" y="238.5" width="375" height="428.5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" textLabel="moZ-Dd-aAS" detailTextLabel="RE5-U8-O5c" style="IBUITableViewCellStyleSubtitle" id="r0Y-jo-uHq">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="55.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="r0Y-jo-uHq" id="Yd0-a1-1Pl">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="moZ-Dd-aAS">
+                                                    <rect key="frame" x="16" y="10" width="33" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="RE5-U8-O5c">
+                                                    <rect key="frame" x="16" y="31.5" width="44" height="14.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="C7C-c1-1Ek" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="30" id="4Ly-JX-k6y"/>
+                            <constraint firstItem="JQy-0b-sMZ" firstAttribute="top" secondItem="C7C-c1-1Ek" secondAttribute="bottom" constant="12" id="6eG-a8-U2o"/>
                             <constraint firstAttribute="trailingMargin" secondItem="C7C-c1-1Ek" secondAttribute="trailing" id="Hrv-n7-ZbW"/>
                             <constraint firstItem="C7C-c1-1Ek" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="TXw-6l-Kux"/>
+                            <constraint firstAttribute="trailing" secondItem="JQy-0b-sMZ" secondAttribute="trailing" id="j4W-OU-dPd"/>
+                            <constraint firstItem="JQy-0b-sMZ" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="ji3-mr-N0N"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="JQy-0b-sMZ" secondAttribute="bottom" id="ofH-Vd-76o"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="enableButton" destination="qOH-OA-U8G" id="N6V-ob-dsq"/>
+                        <outlet property="messageTextField" destination="KiS-Y7-G6Z" id="xCm-ap-3SX"/>
                         <outlet property="messagerSwitcher" destination="9e2-MR-0gH" id="1rC-Kh-pUh"/>
+                        <outlet property="sendMessageButton" destination="gGc-M5-wDh" id="yCg-SA-T4H"/>
+                        <outlet property="tableView" destination="JQy-0b-sMZ" id="nVG-78-QHO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
@@ -61,8 +129,14 @@
         </scene>
     </scenes>
     <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemGreenColor">
             <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemTealColor">
+            <color red="0.35294117647058826" green="0.78431372549019607" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

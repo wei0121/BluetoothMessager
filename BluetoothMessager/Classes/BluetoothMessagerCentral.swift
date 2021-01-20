@@ -65,7 +65,12 @@ class BluetoothMessagerCentral: NSObject {
 }
 
 extension BluetoothMessagerCentral: BluetoothMessagerCentralAction {
-    
+    var readyToSendMessage: Bool {
+        get {
+            // Todo: Check readyToSendMessage
+            return false
+        }
+    }
     func sendMessage(message: String) throws {
         let semaphore = DispatchSemaphore(value: 0)
         let loadingQueue = DispatchQueue.global()
@@ -179,6 +184,7 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
             DispatchQueue.main.async() {
                 let message = String(data: self.avalibleCharacteristics.find(characteristic: characteristic)!.transferedData, encoding: .utf8)
                 print(message ?? "Empty")
+                self.config.didReceiveMessage?(message ?? "Empty")
             }
             
             // Write test data

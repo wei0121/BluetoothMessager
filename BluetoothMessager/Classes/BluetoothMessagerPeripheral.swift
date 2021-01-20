@@ -3,7 +3,6 @@ import CoreBluetooth
 
 class BluetoothMessagerPeripheral: NSObject {
 
-
     static let bluetoothMessagerPeripheralQueueKey = "BluetoothMessager.BluetoothMessagerPeripheralQueue"
     
     var config: BluetoothMessagerPeripheralConfig
@@ -36,6 +35,13 @@ class BluetoothMessagerPeripheral: NSObject {
 }
 
 extension BluetoothMessagerPeripheral: BluetoothMessagerPeripheralAction {
+    var readyToSendMessage: Bool {
+        get {
+            // Todo: Check readyToSendMessage
+            return false
+        }
+    }
+    
     func sendMessage(message: String) {
         messageData.setMessage(message: message)
     }
@@ -74,6 +80,7 @@ extension BluetoothMessagerPeripheral: CBPeripheralManagerDelegate {
                 let stringFromData = String(data: requestValue, encoding: .utf8) else {
                     continue
             }
+            self.config.didReceiveMessage?(stringFromData)
         }
     }
     
