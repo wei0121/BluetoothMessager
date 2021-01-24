@@ -4,6 +4,7 @@ import CoreBluetooth
 public struct BluetoothMessagerPeripheralConfig {
     public var serviceUUID: CBUUID
     public var characteristicUUID: CBUUID
+    public var didUpdateCentral: ((CBCentral?) -> Void)?
     public var didReceiveMessage: ((String) -> Void)?
     public var didSendMessage: ((Bool, BluetoothMessagerError?) -> Void)?
     

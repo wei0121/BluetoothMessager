@@ -7,7 +7,7 @@ class BluetoothMessagerCentral: NSObject {
     var discoveringPeripheral: Bool = false {
         didSet {
             if discoveringPeripheral {
-                centralManager.scanForPeripherals(withServices: [TransferService.serviceUUID],
+                centralManager.scanForPeripherals(withServices: [config.serviceUUID],
                                                   options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
             }else{
                 centralManager.stopScan()
@@ -16,11 +16,12 @@ class BluetoothMessagerCentral: NSObject {
     }
     var discoveredPeripherals: [CBMessagerPeripheral] = [] {
         didSet {
-//            config.didUpdateDiscoveredPeripherals?(discoveredPeripherals)
+            if oldValue != discoveredPeripherals {
+                config.didUpdateDiscoveredPeripherals?(discoveredPeripherals.toPeripherals())
+            }
         }
     }
     var avalibleCharacteristics: [CBMessagerCharacteristic] = []
-    
 
     private var _activated: Bool = false
     private var centralManager: CBCentralManager!
@@ -34,7 +35,7 @@ class BluetoothMessagerCentral: NSObject {
     }
     
     private func retrieveConnection() {
-        let retrieveConnectedPeripherals = centralManager.retrieveConnectedPeripherals(withServices: [TransferService.serviceUUID])
+        let retrieveConnectedPeripherals = centralManager.retrieveConnectedPeripherals(withServices: [config.serviceUUID])
         retrieveConnectedPeripherals.forEach {
             if ($0.state == .disconnected || $0.state == .disconnecting) {
                 centralManager.connect($0, options: nil)
@@ -50,7 +51,7 @@ class BluetoothMessagerCentral: NSObject {
         
         for service in (peripheral.services ?? [] as [CBService]) {
             for characteristic in (service.characteristics ?? [] as [CBCharacteristic]) {
-                if characteristic.uuid == TransferService.characteristicUUID && characteristic.isNotifying {
+                if characteristic.uuid == config.characteristicUUID && characteristic.isNotifying {
                     peripheral.setNotifyValue(false, for: characteristic)
                 }
             }
@@ -59,7 +60,12 @@ class BluetoothMessagerCentral: NSObject {
     }
     
     private func writeData() {
-        
+        avalibleCharacteristics.forEach { characteristic in
+            characteristic.write(data: Data())
+//            peripheral.origin.writeValue(Data(), for: avalibleCharacteristics.first!, type: .withResponse)
+            
+        }
+
     }
 }
 
@@ -78,23 +84,42 @@ extension BluetoothMessagerCentral: BluetoothMessagerCentralAction {
             return false
         }
     }
-    func sendMessage(message: String) throws {
-        let semaphore = DispatchSemaphore(value: 0)
-        let loadingQueue = DispatchQueue.global()
-        loadingQueue.async {
-            
-            // TODO: Can remove the timeout while
-            let start = Date()
-            let timeOut = start.addingTimeInterval(self.config.timeOut)
-            while Date() > timeOut {
-                if self.isReadyToSendMessage {
-                    self.writeData()
-                }
-            }
-        }
-        semaphore.wait(timeout: .now() + self.config.timeOut)
-        throw BluetoothMessagerError.noPeripheralConnected
+    func sendMessage(message: String) {
+        self.writeData()
+//        let semaphore = DispatchSemaphore(value: 0)
+//        let loadingQueue = DispatchQueue.global()
+//        loadingQueue.async {
+//
+//            // TODO: Can remove the timeout while
+//            let start = Date()
+//            let timeOut = start.addingTimeInterval(self.config.timeOut)
+//            while Date() > timeOut {
+//                if self.isReadyToSendMessage {
+//                    self.writeData()
+//                }
+//            }
+//        }
+//        semaphore.wait(timeout: .now() + self.config.timeOut)
+//        throw BluetoothMessagerError.noPeripheralConnected
     }
+
+//    func sendMessage(message: String) throws {
+//        let semaphore = DispatchSemaphore(value: 0)
+//        let loadingQueue = DispatchQueue.global()
+//        loadingQueue.async {
+//
+//            // TODO: Can remove the timeout while
+//            let start = Date()
+//            let timeOut = start.addingTimeInterval(self.config.timeOut)
+//            while Date() > timeOut {
+//                if self.isReadyToSendMessage {
+//                    self.writeData()
+//                }
+//            }
+//        }
+//        semaphore.wait(timeout: .now() + self.config.timeOut)
+//        throw BluetoothMessagerError.noPeripheralConnected
+//    }
     
     func setPeripheralsActivation(peripheral: CBPeripheral, enable: Bool) {
         
@@ -125,19 +150,19 @@ extension BluetoothMessagerCentral: CBCentralManagerDelegate {
             centralManager.connect(peripheral, options: nil)
         }
         if discoveringPeripheral {
-            centralManager.scanForPeripherals(withServices: [TransferService.serviceUUID],
+            centralManager.scanForPeripherals(withServices: [config.serviceUUID],
                                               options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
         }
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        discoveredPeripherals.setConnection(peripheral: peripheral, isConnected: true)
+        config.didUpdateDiscoveredPeripherals?(discoveredPeripherals.toPeripherals())
         peripheral.delegate = self
-        peripheral.discoverServices([TransferService.serviceUUID])
+        peripheral.discoverServices([config.serviceUUID])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        discoveredPeripherals.setConnection(peripheral: peripheral, isConnected: false)
+        config.didUpdateDiscoveredPeripherals?(discoveredPeripherals.toPeripherals())
         retrieveConnection()
     }
 
@@ -150,7 +175,9 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
 
     // Services
     func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
-        peripheral.discoverServices([TransferService.serviceUUID])
+        peripheral.discoverServices([config.serviceUUID])
+        avalibleCharacteristics.remove(in: invalidatedServices)
+        config.didUpdateNotifyingCharacteristic?(avalibleCharacteristics.toCharacteristics())
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
@@ -159,7 +186,7 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
             return
         }
         peripheralServices.forEach { (service) in
-            peripheral.discoverCharacteristics([TransferService.characteristicUUID], for: service)
+            peripheral.discoverCharacteristics([config.characteristicUUID], for: service)
         }
     }
     
@@ -169,9 +196,10 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
             cleanup(peripheral: peripheral)
             return
         }
-        serviceCharacteristics.filter{ $0.uuid == TransferService.characteristicUUID }.forEach { (characteristic) in
+        serviceCharacteristics.filter{ $0.uuid == config.characteristicUUID }.forEach { (characteristic) in
             avalibleCharacteristics.insertIfNotExist(characteristic: characteristic)
             peripheral.setNotifyValue(true, for: characteristic)
+            
         }
     }
     
@@ -203,10 +231,11 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        guard error == nil, characteristic.uuid == TransferService.characteristicUUID, characteristic.isNotifying  else {
+        guard error == nil, characteristic.uuid == config.characteristicUUID, characteristic.isNotifying  else {
             cleanup(peripheral: peripheral)
             return
         }
+        config.didUpdateNotifyingCharacteristic?(avalibleCharacteristics.toCharacteristics())
     }
     
     // write Characteristics

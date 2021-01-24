@@ -16,13 +16,19 @@ class BluetoothMessagerPeripheral: NSObject {
         self.peripheralManager = CBPeripheralManager(delegate: self, queue: DispatchQueue(label: BluetoothMessagerPeripheral.bluetoothMessagerPeripheralQueueKey), options: [CBPeripheralManagerOptionShowPowerAlertKey: true])
     }
     private var _activated: Bool = false
-    private var connectedCentral: CBCentral?
+    private var connectedCentral: CBCentral? {
+        didSet {
+            DispatchQueue.main.async() {
+                self.config.didUpdateCentral?(self.connectedCentral)
+            }
+        }
+    }
     private var transferCharacteristic: CBMutableCharacteristic?
     private var peripheralManager: CBPeripheralManager!
     private var messageData: CBMessagerData!
     private func setupPeripheral() {
         let transferCharacteristic = CBMutableCharacteristic(type: config.characteristicUUID,
-                                                         properties: [.notify, .writeWithoutResponse],
+                                                         properties: [.notify, .write],
                                                          value: nil,
                                                          permissions: [.readable, .writeable])
         let transferService = CBMutableService(type: config.serviceUUID, primary: true)

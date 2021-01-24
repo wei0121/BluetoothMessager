@@ -28,6 +28,11 @@ class ViewController: UIViewController {
             }
         }
     }
+    enum ConnectionState {
+        case disconnected
+        case connecting
+        case connected(Int)
+    }
     var receivedMessages:[String] = ["some"] {
         didSet {
             tableView.reloadData()
@@ -59,11 +64,35 @@ class ViewController: UIViewController {
         sendMessage()
     }
     
+    func setEnableButton(state: ConnectionState) {
+        switch state {
+        case .disconnected:
+            enableButton.isEnabled = true
+            enableButton.setTitle("Enable", for: .normal)
+            enableButton.backgroundColor = UIColor.green
+        case .connecting:
+            enableButton.isEnabled = false
+            enableButton.setTitle("Connecting", for: .normal)
+            enableButton.backgroundColor = UIColor.gray
+        case .connected(let count):
+            enableButton.isEnabled = true
+            enableButton.setTitle("Disable(\(count))", for: .normal)
+            enableButton.backgroundColor = UIColor.red
+        }
+    }
+    
     func messagerCentral() {
+        self.setEnableButton(state:.connecting)
         var config = BluetoothMessagerCentralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
         config.didUpdateDiscoveredPeripherals = {(peripherals) -> Void in
             print("didUpdateDiscoveredPeripherals")
             print(peripherals)
+        }
+        config.didUpdateNotifyingCharacteristic = {(characteristic) -> Void in
+            print("didUpdateNotifyingCharacteristic")
+            print(characteristic)
+            let notifyingCharacteristicCount = characteristic.filter({ $0.isNotifying }).count
+            self.setEnableButton(state: notifyingCharacteristicCount > 0 ? .connected(notifyingCharacteristicCount) : .connecting)
         }
         config.didReceiveMessage = {(message) -> Void in
             print("didReceiveMessage")
@@ -75,7 +104,12 @@ class ViewController: UIViewController {
     }
     
     func messagerPeripheral() {
+        self.setEnableButton(state:.connecting)
         var config = BluetoothMessagerPeripheralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
+        config.didUpdateCentral = {(central) -> Void in
+            print("didUpdateCentral")
+            self.setEnableButton(state: central == nil ? .disconnected : .connected(1))
+        }
         config.didReceiveMessage = {(message) -> Void in
             print("didReceiveMessage")
             print(message)
