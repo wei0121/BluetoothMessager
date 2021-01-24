@@ -97,7 +97,9 @@ extension BluetoothMessagerPeripheral: CBPeripheralManagerDelegate {
                 let stringFromData = String(data: requestValue, encoding: .utf8) else {
                     continue
             }
-            self.config.didReceiveMessage?(stringFromData)
+            DispatchQueue.main.async() {
+                self.config.didReceiveMessage?(stringFromData)
+            }
         }
     }
     
