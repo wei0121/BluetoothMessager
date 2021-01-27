@@ -27,31 +27,6 @@ class CBMessagerCharacteristic: CBCharacteristic {
             messageDataIndex += amountToSend
         }
     }
-    
-    func writeBackup(data: Data) {
-        writeRetried = 0
-        let peripheral = origin.service.peripheral
-        while writeRetried < 5 && peripheral.canSendWriteWithoutResponse {
-                    
-            let mtu = peripheral.maximumWriteValueLength (for: .withResponse)
-            var rawPacket = [UInt8]()
-            let bytesToCopy: size_t = min(mtu, data.count)
-            data.copyBytes(to: &rawPacket, count: bytesToCopy)
-            let packetData = Data(bytes: &rawPacket, count: bytesToCopy)
-            
-//            let stringFromData = String(data: packetData, encoding: .utf8)
-//            os_log("Writing %d bytes: %s", bytesToCopy, String(describing: stringFromData))
-            
-            peripheral.writeValue(packetData, for: origin, type: .withResponse)
-            writeRetried += 1
-        }
-        
-        if writeRetried == 5 {
-            peripheral.setNotifyValue(false, for: origin)
-        }
-        
-//        origin.service.peripheral.writeValue(data, for: origin, type: .withoutResponse)
-    }
 }
 
 extension Array where Element == CBMessagerCharacteristic {
@@ -76,5 +51,10 @@ extension Array where Element == CBMessagerCharacteristic {
     }
     func toCharacteristics() -> [CBCharacteristic] {
         return self.map { $0.origin }
+    }
+    mutating func clean() {
+        self = self.filter({
+            $0.origin.service.peripheral.state == .connected
+        })
     }
 }

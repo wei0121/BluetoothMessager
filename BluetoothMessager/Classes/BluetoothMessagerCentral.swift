@@ -198,6 +198,7 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
             cleanup(peripheral: peripheral)
             return
         }
+        avalibleCharacteristics.clean()
         config.didUpdateNotifyingCharacteristic?(avalibleCharacteristics.toCharacteristics())
     }
     

@@ -1,16 +1,6 @@
-//
-//  ViewController.swift
-//  BluetoothMessager
-//
-//  Created by weiren on 01/11/2021.
-//  Copyright (c) 2021 weiren. All rights reserved.
-//
-
 import UIKit
 import BluetoothMessager
 import CoreBluetooth
-
-
 
 class ViewController: UIViewController {
     static let serviceUUID = CBUUID(string: "E20A39F4-73F5-4BC4-A12F-17D1AD07A961")
@@ -86,11 +76,9 @@ class ViewController: UIViewController {
         var config = BluetoothMessagerCentralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
         config.didUpdateDiscoveredPeripherals = {(peripherals) -> Void in
             print("didUpdateDiscoveredPeripherals")
-            print(peripherals)
         }
         config.didUpdateNotifyingCharacteristic = {(characteristic) -> Void in
             print("didUpdateNotifyingCharacteristic")
-            print(characteristic)
             let notifyingCharacteristicCount = characteristic.filter({ $0.isNotifying }).count
             self.setEnableButton(state: notifyingCharacteristicCount > 0 ? .connected(notifyingCharacteristicCount) : .connecting)
         }
@@ -144,7 +132,6 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }
 
 extension ViewController: UITableViewDataSource {
@@ -159,7 +146,5 @@ extension ViewController: UITableViewDataSource {
         
         return cell
     }
-    
-    
 }
 
