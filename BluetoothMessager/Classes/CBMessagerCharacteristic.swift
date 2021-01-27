@@ -3,25 +3,29 @@ import CoreBluetooth
 
 class CBMessagerCharacteristic: CBCharacteristic {
     var writeRetried = 0
-    
     var transferedData: Data = Data()
-    var transferCompleted: Bool = false
+    var transferBlocked: Bool = false
     var origin: CBCharacteristic
     init(from: CBCharacteristic) {
         self.origin = from
     }
     
-
-    
-    func write(data: Data) {
+    func write(data: Data, withResponse: Bool) {
+        guard !transferBlocked else {
+            return
+        }
         let peripheral = origin.service.peripheral
-        
-        let mtu = peripheral.maximumWriteValueLength (for: .withResponse)
-        var rawPacket = [UInt8]()
-        let bytesToCopy: size_t = min(mtu, data.count)
-        let packetData = Data(bytes: &rawPacket, count: bytesToCopy)
-        peripheral.writeValue(packetData, for: origin, type: .withResponse)
-        peripheral.setNotifyValue(true, for: origin)
+        let mtu = peripheral.maximumWriteValueLength (for: withResponse ? .withResponse : .withoutResponse)
+        var messageDataIndex = 0
+        if withResponse { transferBlocked = true }
+        while peripheral.canSendWriteWithoutResponse && messageDataIndex < data.count {
+            var amountToSend = data.count - messageDataIndex
+            amountToSend = min(amountToSend, mtu)
+            let chunk = data.subdata(in: messageDataIndex..<(messageDataIndex + amountToSend))
+            peripheral.writeValue(chunk, for: origin, type: withResponse ? .withResponse : .withoutResponse)
+            peripheral.setNotifyValue(true, for: origin)
+            messageDataIndex += amountToSend
+        }
     }
     
     func writeBackup(data: Data) {

@@ -28,9 +28,9 @@ class BluetoothMessagerPeripheral: NSObject {
     private var messageData: CBMessagerData!
     private func setupPeripheral() {
         let transferCharacteristic = CBMutableCharacteristic(type: config.characteristicUUID,
-                                                         properties: [.notify, .write],
-                                                         value: nil,
-                                                         permissions: [.readable, .writeable])
+                                                             properties: [.notify, .write, .writeWithoutResponse],
+                                                             value: nil,
+                                                             permissions: [.readable, .writeable])
         let transferService = CBMutableService(type: config.serviceUUID, primary: true)
         
         transferService.characteristics = [transferCharacteristic]

@@ -122,13 +122,7 @@ class ViewController: UIViewController {
         let deviceType = DeviceType.init(rawValue: messagerSwitcher.selectedSegmentIndex)
         switch deviceType {
         case .central:
-            do {
-                try bluetoothMessager?.central?.sendMessage(message: messageTextField.text ?? "None")
-            } catch is BluetoothMessagerError {
-                print("Couldn't buy that from the vending machine.")
-            } catch {
-                print("Unexpected non-vending-machine-related error: \(error)")
-            }
+            bluetoothMessager?.central?.sendMessage(message: messageTextField.text ?? "None", withResponse: false)
         case .peripheral:
             bluetoothMessager?.peripheral?.sendMessage(message: messageTextField.text ?? "None")
         case .none:

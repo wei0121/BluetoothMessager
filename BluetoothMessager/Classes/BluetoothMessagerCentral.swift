@@ -59,13 +59,10 @@ class BluetoothMessagerCentral: NSObject {
         centralManager.cancelPeripheralConnection(peripheral)
     }
     
-    private func writeData() {
+    private func writeData(data: Data, withResponse: Bool) {
         avalibleCharacteristics.forEach { characteristic in
-            characteristic.write(data: Data())
-//            peripheral.origin.writeValue(Data(), for: avalibleCharacteristics.first!, type: .withResponse)
-            
+            characteristic.write(data: data, withResponse: withResponse)
         }
-
     }
 }
 
@@ -80,51 +77,17 @@ extension BluetoothMessagerCentral: BluetoothMessagerCentralAction {
     }
     var isReadyToSendMessage: Bool {
         get {
-            // Todo: Check readyToSendMessage
-            return false
+            return avalibleCharacteristics.filter({ $0.transferBlocked }).count == 0
         }
     }
-    func sendMessage(message: String) {
-        self.writeData()
-//        let semaphore = DispatchSemaphore(value: 0)
-//        let loadingQueue = DispatchQueue.global()
-//        loadingQueue.async {
-//
-//            // TODO: Can remove the timeout while
-//            let start = Date()
-//            let timeOut = start.addingTimeInterval(self.config.timeOut)
-//            while Date() > timeOut {
-//                if self.isReadyToSendMessage {
-//                    self.writeData()
-//                }
-//            }
-//        }
-//        semaphore.wait(timeout: .now() + self.config.timeOut)
-//        throw BluetoothMessagerError.noPeripheralConnected
+    func sendMessage(message: String, withResponse: Bool) {
+        let messageData = message.data(using: .utf8)!
+        self.writeData(data: messageData, withResponse: withResponse)
     }
-
-//    func sendMessage(message: String) throws {
-//        let semaphore = DispatchSemaphore(value: 0)
-//        let loadingQueue = DispatchQueue.global()
-//        loadingQueue.async {
-//
-//            // TODO: Can remove the timeout while
-//            let start = Date()
-//            let timeOut = start.addingTimeInterval(self.config.timeOut)
-//            while Date() > timeOut {
-//                if self.isReadyToSendMessage {
-//                    self.writeData()
-//                }
-//            }
-//        }
-//        semaphore.wait(timeout: .now() + self.config.timeOut)
-//        throw BluetoothMessagerError.noPeripheralConnected
-//    }
     
     func setPeripheralsActivation(peripheral: CBPeripheral, enable: Bool) {
         
     }
-
 }
 
 extension BluetoothMessagerCentral: CBCentralManagerDelegate {
@@ -231,7 +194,7 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        guard error == nil, characteristic.uuid == config.characteristicUUID, characteristic.isNotifying  else {
+        guard error == nil, characteristic.uuid == config.characteristicUUID, characteristic.isNotifying else {
             cleanup(peripheral: peripheral)
             return
         }
@@ -240,6 +203,10 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
     
     // write Characteristics
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        
+        avalibleCharacteristics.find(characteristic: characteristic)?.transferBlocked = false
+    }
+    
+    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+
     }
 }
