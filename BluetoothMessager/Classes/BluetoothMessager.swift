@@ -3,8 +3,8 @@ import CoreBluetooth
 
 public class BluetoothMessager {
     
-    public let central: BluetoothMessagerCentralAction?
-    public let peripheral: BluetoothMessagerPeripheralAction?
+    public var central: BluetoothMessagerCentralAction?
+    public var peripheral: BluetoothMessagerPeripheralAction?
     
     public init(centralConfig: BluetoothMessagerCentralConfig? = nil, peripheralConfig: BluetoothMessagerPeripheralConfig? = nil) {
         self.central = BluetoothMessagerCentral(config: centralConfig)

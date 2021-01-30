@@ -67,12 +67,12 @@ class BluetoothMessagerCentral: NSObject {
 }
 
 extension BluetoothMessagerCentral: BluetoothMessagerCentralAction {
-    var activated: Bool {
+    var scanNewPeripheral: Bool {
         get {
-            return _activated
+            return discoveringPeripheral
         }
         set {
-            _activated = newValue
+            discoveringPeripheral = newValue
         }
     }
     var isReadyToSendMessage: Bool {
@@ -83,10 +83,6 @@ extension BluetoothMessagerCentral: BluetoothMessagerCentralAction {
     func sendMessage(message: String, withResponse: Bool) {
         let messageData = message.data(using: .utf8)!
         self.writeData(data: messageData, withResponse: withResponse)
-    }
-    
-    func setPeripheralsActivation(peripheral: CBPeripheral, enable: Bool) {
-        
     }
 }
 
