@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'BluetoothMessager'
-  s.version          = '0.1.0'
+  s.version          = '0.2.0'
   s.summary          = 'A simplified bluetooth library for sending messages between iOS devices.'
   s.description      = <<-DESC
   BluetoothMessager is an extension for using sending messages between iOS devices via Core Bluetooth.
