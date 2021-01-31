@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   BluetoothMessager is an extension for using sending messages between iOS devices via Core Bluetooth.
                        DESC
 
-  s.homepage         = 'https://github.com/weiren'
+  s.homepage         = 'https://github.com/wei0121/BluetoothMessager'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'weiren' => 'xwr0121@163.com' }
   s.source           = { :git => 'https://github.com/weiren/BluetoothMessager.git', :tag => s.version.to_s }
