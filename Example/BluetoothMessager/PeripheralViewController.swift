@@ -11,26 +11,30 @@ class PeripheralViewController: UIViewController {
             messageBubble?.tableView.scrollToBottom()
         }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         messagerPeripheral()
         hideKeyboardWhenTappedAround()
     }
     
+    deinit {
+        print("deinit called")
+    }
+
     func messagerPeripheral() {
-        var config = BluetoothMessagerPeripheralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
+        let config = BluetoothMessagerPeripheralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
         config.didUpdateCentral = {(central) -> Void in
             print("didUpdateCentral")
         }
-        config.didReceiveMessage = {(message) -> Void in
+        config.didReceiveMessage = { (message) -> Void in
             print("didReceiveMessage")
             print(message)
             self.receivedMessages.append(message: message, sender: "central")
         }
         bluetoothMessager = BluetoothMessager(peripheralConfig: config)
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "bubbleSegue" {
             if let pop: MessageBubbleViewController = segue.destination as? MessageBubbleViewController {
@@ -46,7 +50,7 @@ extension PeripheralViewController:  MessageBubbleViewControllerDelegate {
         bluetoothMessager?.peripheral?.sendMessage(message: message)
         receivedMessages.append(message: message, sender: nil)
     }
-    
+
     func onUpdateMessages() -> [MessageBubble] {
         return receivedMessages
     }

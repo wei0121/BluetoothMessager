@@ -21,12 +21,16 @@ class CentralViewController: UIViewController {
         hideKeyboardWhenTappedAround() 
     }
     
+    deinit {
+        print("deinit called")
+    }
+    
     func messagerCentral() {
-        var config = BluetoothMessagerCentralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
+        let config = BluetoothMessagerCentralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
         config.didUpdateDiscoveredPeripherals = {(peripherals) -> Void in
             print("didUpdateDiscoveredPeripherals")
         }
-        config.didUpdateNotifyingCharacteristic = {(characteristics) -> Void in
+        config.didUpdateNotifyingCharacteristic = { (characteristics) -> Void in
             print("didUpdateNotifyingCharacteristic")
             self.connectedCount = characteristics.count
         }

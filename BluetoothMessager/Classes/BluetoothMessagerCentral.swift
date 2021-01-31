@@ -3,9 +3,12 @@ import CoreBluetooth
 
 class BluetoothMessagerCentral: NSObject {
     
-    var config: BluetoothMessagerCentralConfig
+    weak var config: BluetoothMessagerCentralConfig?
     var discoveringPeripheral: Bool = false {
         didSet {
+            guard let config = config else {
+                fatalError()
+            }
             if discoveringPeripheral {
                 centralManager.scanForPeripherals(withServices: [config.serviceUUID],
                                                   options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
@@ -16,6 +19,7 @@ class BluetoothMessagerCentral: NSObject {
     }
     var discoveredPeripherals: [CBMessagerPeripheral] = [] {
         didSet {
+            guard let config = config else { fatalError() }
             if oldValue != discoveredPeripherals {
                 config.didUpdateDiscoveredPeripherals?(discoveredPeripherals.toPeripherals())
             }
@@ -26,15 +30,14 @@ class BluetoothMessagerCentral: NSObject {
     private var _activated: Bool = false
     private var centralManager: CBCentralManager!
     init?(config: BluetoothMessagerCentralConfig?) {
-        guard config != nil else {
-            return nil
-        }
-        self.config = config!
+        guard config != nil else { return nil }
+        self.config = config
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
     }
     
     private func retrieveConnection() {
+        guard let config = config else { fatalError() }
         let retrieveConnectedPeripherals = centralManager.retrieveConnectedPeripherals(withServices: [config.serviceUUID])
         retrieveConnectedPeripherals.forEach {
             if ($0.state == .disconnected || $0.state == .disconnecting) {
@@ -47,8 +50,8 @@ class BluetoothMessagerCentral: NSObject {
     }
     
     private func cleanup(peripheral: CBPeripheral) {
+        guard let config = config else { fatalError() }
         guard case .connected = peripheral.state else { return }
-        
         for service in (peripheral.services ?? [] as [CBService]) {
             for characteristic in (service.characteristics ?? [] as [CBCharacteristic]) {
                 if characteristic.uuid == config.characteristicUUID && characteristic.isNotifying {
@@ -101,6 +104,7 @@ extension BluetoothMessagerCentral: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
                         advertisementData: [String: Any], rssi RSSI: NSNumber) {
+        guard let config = config else { fatalError() }
         guard RSSI.intValue >= config.minimalSignalStrength else {
             return
         }
@@ -115,12 +119,14 @@ extension BluetoothMessagerCentral: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        guard let config = config else { fatalError() }
         config.didUpdateDiscoveredPeripherals?(discoveredPeripherals.toPeripherals())
         peripheral.delegate = self
         peripheral.discoverServices([config.serviceUUID])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        guard let config = config else { fatalError() }
         config.didUpdateDiscoveredPeripherals?(discoveredPeripherals.toPeripherals())
         retrieveConnection()
     }
@@ -134,12 +140,14 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
 
     // Services
     func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
+        guard let config = config else { fatalError() }
         peripheral.discoverServices([config.serviceUUID])
         avalibleCharacteristics.remove(in: invalidatedServices)
         config.didUpdateNotifyingCharacteristic?(avalibleCharacteristics.toCharacteristics())
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        guard let config = config else { fatalError() }
         guard error == nil, let peripheralServices = peripheral.services else {
             cleanup(peripheral: peripheral)
             return
@@ -151,6 +159,7 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
     
     // Characteristics
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        guard let config = config else { fatalError() }
         guard error == nil, let serviceCharacteristics = service.characteristics else {
             cleanup(peripheral: peripheral)
             return
@@ -176,20 +185,19 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
         if stringFromData == "EOM" {
             // End-of-message case: show the data.
             DispatchQueue.main.async() {
+                guard let config = self.config else { fatalError() }
                 let message = String(data: self.avalibleCharacteristics.find(characteristic: characteristic)!.transferedData, encoding: .utf8)
                 print(message ?? "Empty")
                 self.avalibleCharacteristics.find(characteristic: characteristic)?.transferedData = Data()
-                self.config.didReceiveMessage?(message ?? "Empty", peripheral.name ?? "Unknown")
+                config.didReceiveMessage?(message ?? "Empty", peripheral.name ?? "Unknown")
             }
-            
-            // Write test data
-//            writeData()
         } else {
             avalibleCharacteristics.find(characteristic: characteristic)?.transferedData.append(characteristicData)
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        guard let config = config else { fatalError() }
         guard error == nil, characteristic.uuid == config.characteristicUUID, characteristic.isNotifying else {
             cleanup(peripheral: peripheral)
             return

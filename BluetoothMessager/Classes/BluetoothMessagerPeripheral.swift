@@ -5,7 +5,7 @@ class BluetoothMessagerPeripheral: NSObject {
 
     static let bluetoothMessagerPeripheralQueueKey = "BluetoothMessager.BluetoothMessagerPeripheralQueue"
     
-    var config: BluetoothMessagerPeripheralConfig
+    weak var config: BluetoothMessagerPeripheralConfig?
     init?(config: BluetoothMessagerPeripheralConfig?) {
         guard config != nil else {
             return nil
@@ -19,7 +19,8 @@ class BluetoothMessagerPeripheral: NSObject {
     private var connectedCentral: CBCentral? {
         didSet {
             DispatchQueue.main.async() {
-                self.config.didUpdateCentral?(self.connectedCentral)
+                guard let config = self.config else { fatalError() }
+                config.didUpdateCentral?(self.connectedCentral)
             }
         }
     }
@@ -27,6 +28,7 @@ class BluetoothMessagerPeripheral: NSObject {
     private var peripheralManager: CBPeripheralManager!
     private var messageData: CBMessagerData!
     private func setupPeripheral() {
+        guard let config = config else { fatalError() }
         let transferCharacteristic = CBMutableCharacteristic(type: config.characteristicUUID,
                                                              properties: [.notify, .write, .writeWithoutResponse],
                                                              value: nil,
@@ -98,7 +100,8 @@ extension BluetoothMessagerPeripheral: CBPeripheralManagerDelegate {
                     continue
             }
             DispatchQueue.main.async() {
-                self.config.didReceiveMessage?(stringFromData)
+                guard let config = self.config else { fatalError() }
+                config.didReceiveMessage?(stringFromData)
             }
         }
     }

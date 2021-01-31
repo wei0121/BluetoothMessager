@@ -39,6 +39,14 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jR5-ER-4hR">
+                                <rect key="frame" x="176" y="453" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <segue destination="xvg-Gl-7o9" kind="push" id="KAm-cF-K0c"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -371,6 +379,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W9Q-4W-zq7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2496.8000000000002" y="867.61619190404804"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Ecb-OQ-64h">
+            <objects>
+                <viewController id="xvg-Gl-7o9" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="M7H-01-SDk"/>
+                        <viewControllerLayoutGuide type="bottom" id="d8J-Hq-KdT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="wl0-gC-Rsj">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="fMM-10-rKS"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="a5c-Si-yYK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="921" y="1610"/>
         </scene>
         <!--Peripheral View Controller-->
         <scene sceneID="8cW-4k-aVg">

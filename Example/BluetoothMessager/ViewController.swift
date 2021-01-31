@@ -73,7 +73,7 @@ class ViewController: UIViewController {
     
     func messagerCentral() {
         self.setEnableButton(state:.connecting)
-        var config = BluetoothMessagerCentralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
+        let config = BluetoothMessagerCentralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
         config.didUpdateDiscoveredPeripherals = {(peripherals) -> Void in
             print("didUpdateDiscoveredPeripherals")
         }
@@ -93,7 +93,7 @@ class ViewController: UIViewController {
     
     func messagerPeripheral() {
         self.setEnableButton(state:.connecting)
-        var config = BluetoothMessagerPeripheralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
+        let config = BluetoothMessagerPeripheralConfig(serviceUUID: ViewController.serviceUUID, characteristicUUID: ViewController.characteristicUUID)
         config.didUpdateCentral = {(central) -> Void in
             print("didUpdateCentral")
             self.setEnableButton(state: central == nil ? .disconnected : .connected(1))

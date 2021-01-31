@@ -8,7 +8,7 @@ struct MessageBubble {
     var date: Date
 }
 
-protocol MessageBubbleViewControllerDelegate {
+protocol MessageBubbleViewControllerDelegate: class {
     func onUpdateMessages() -> [MessageBubble]
     func onSendMessages(message: String)
 }
@@ -18,7 +18,7 @@ class MessageBubbleViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var textView: UITextView!
-    var delegate: MessageBubbleViewControllerDelegate?
+    weak var delegate: MessageBubbleViewControllerDelegate?
     var data = [String]()
     
     @IBAction func onSendButtonTap(_ sender: Any) {

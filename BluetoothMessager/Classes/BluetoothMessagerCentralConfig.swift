@@ -1,7 +1,7 @@
 import Foundation
 import CoreBluetooth
 
-public struct BluetoothMessagerCentralConfig {
+public class BluetoothMessagerCentralConfig{
     public var serviceUUID: CBUUID
     public var characteristicUUID: CBUUID
     public var minimalSignalStrength: Int = -50

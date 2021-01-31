@@ -1,7 +1,7 @@
 import Foundation
 import CoreBluetooth
 
-public struct BluetoothMessagerPeripheralConfig {
+public class BluetoothMessagerPeripheralConfig {
     public var serviceUUID: CBUUID
     public var characteristicUUID: CBUUID
     public var didUpdateCentral: ((CBCentral?) -> Void)?
