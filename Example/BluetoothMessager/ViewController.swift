@@ -82,7 +82,7 @@ class ViewController: UIViewController {
             let notifyingCharacteristicCount = characteristic.filter({ $0.isNotifying }).count
             self.setEnableButton(state: notifyingCharacteristicCount > 0 ? .connected(notifyingCharacteristicCount) : .connecting)
         }
-        config.didReceiveMessage = {(message) -> Void in
+        config.didReceiveMessage = {(message, sender) -> Void in
             print("didReceiveMessage")
             print(message)
             self.receivedMessages.append(message)

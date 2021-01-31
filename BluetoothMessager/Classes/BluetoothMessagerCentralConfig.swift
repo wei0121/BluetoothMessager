@@ -8,10 +8,10 @@ public struct BluetoothMessagerCentralConfig {
     public var timeOut: TimeInterval = 1
     public var didUpdateDiscoveredPeripherals: (([CBPeripheral]) -> Void)?
     public var didUpdateNotifyingCharacteristic: (([CBCharacteristic]) -> Void)?
-    public var didReceiveMessage: ((String) -> Void)?
+    public var didReceiveMessage: ((_ message: String, _ sender: String) -> Void)?
     public var didSendMessage: ((Bool, BluetoothMessagerError?) -> Void)?
     
-    public init(serviceUUID: CBUUID, characteristicUUID: CBUUID, didUpdateDiscoveredPeripherals: (([CBPeripheral]) -> Void)? = nil, didReceiveMessage: ((String) -> Void)? = nil) {
+    public init(serviceUUID: CBUUID, characteristicUUID: CBUUID, didUpdateDiscoveredPeripherals: (([CBPeripheral]) -> Void)? = nil, didReceiveMessage: ((_ message: String, _ sender: String) -> Void)? = nil) {
         self.serviceUUID = serviceUUID
         self.characteristicUUID = characteristicUUID
         self.didUpdateDiscoveredPeripherals = didUpdateDiscoveredPeripherals

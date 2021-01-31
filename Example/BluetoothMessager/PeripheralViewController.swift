@@ -5,9 +5,10 @@ import CoreBluetooth
 class PeripheralViewController: UIViewController {
     var bluetoothMessager: BluetoothMessager?
     var messageBubble: MessageBubbleViewController?
-    var receivedMessages:[MessageBubble] = [MessageBubble(isSender: true, message: "some", date: Date())] {
+    var receivedMessages:[MessageBubble] = [] {
         didSet {
             messageBubble?.tableView.reloadData()
+            messageBubble?.tableView.scrollToBottom()
         }
     }
     
@@ -25,7 +26,7 @@ class PeripheralViewController: UIViewController {
         config.didReceiveMessage = {(message) -> Void in
             print("didReceiveMessage")
             print(message)
-            self.receivedMessages.append(message: message, isSender: false)
+            self.receivedMessages.append(message: message, sender: "central")
         }
         bluetoothMessager = BluetoothMessager(peripheralConfig: config)
     }
@@ -43,7 +44,7 @@ class PeripheralViewController: UIViewController {
 extension PeripheralViewController:  MessageBubbleViewControllerDelegate {
     func onSendMessages(message: String) {
         bluetoothMessager?.peripheral?.sendMessage(message: message)
-        receivedMessages.append(message: message, isSender: true)
+        receivedMessages.append(message: message, sender: nil)
     }
     
     func onUpdateMessages() -> [MessageBubble] {

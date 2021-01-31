@@ -7,9 +7,10 @@ class CentralViewController: UIViewController {
     var bluetoothMessager: BluetoothMessager?
     var messageBubble: MessageBubbleViewController?
     var settingView: CentralSettingViewController?
-    var receivedMessages:[MessageBubble] = [MessageBubble(isSender: true, message: "some", date: Date())] {
+    var receivedMessages:[MessageBubble] = [] {
         didSet {
             messageBubble?.tableView.reloadData()
+            messageBubble?.tableView.scrollToBottom()
         }
     }
     var connectedCount: Int = 0
@@ -29,10 +30,10 @@ class CentralViewController: UIViewController {
             print("didUpdateNotifyingCharacteristic")
             self.connectedCount = characteristics.count
         }
-        config.didReceiveMessage = {(message) -> Void in
+        config.didReceiveMessage = {(message, sender) -> Void in
             print("didReceiveMessage")
             print(message)
-            self.receivedMessages.append(message: message, isSender: false)
+            self.receivedMessages.append(message: message, sender: sender)
         }
         bluetoothMessager = BluetoothMessager(centralConfig: config)
     }
@@ -62,7 +63,7 @@ class CentralViewController: UIViewController {
 extension CentralViewController:  MessageBubbleViewControllerDelegate {
     func onSendMessages(message: String) {
         bluetoothMessager?.central?.sendMessage(message: message, withResponse: settingView?.messageResponseSwitch.isOn ?? false)
-        receivedMessages.append(message: message, isSender: true)
+        receivedMessages.append(message: message, sender: nil)
     }
     
     func onUpdateMessages() -> [MessageBubble] {

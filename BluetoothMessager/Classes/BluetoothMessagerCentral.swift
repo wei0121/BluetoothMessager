@@ -179,7 +179,7 @@ extension BluetoothMessagerCentral: CBPeripheralDelegate {
                 let message = String(data: self.avalibleCharacteristics.find(characteristic: characteristic)!.transferedData, encoding: .utf8)
                 print(message ?? "Empty")
                 self.avalibleCharacteristics.find(characteristic: characteristic)?.transferedData = Data()
-                self.config.didReceiveMessage?(message ?? "Empty")
+                self.config.didReceiveMessage?(message ?? "Empty", peripheral.name ?? "Unknown")
             }
             
             // Write test data
