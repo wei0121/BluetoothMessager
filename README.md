@@ -22,7 +22,7 @@ pod 'BluetoothMessager'
 
 ## Author
 
-weiren, xwr0121@163.com
+weiren, xwr0121@outlook.com
 
 ## Roadmap
 

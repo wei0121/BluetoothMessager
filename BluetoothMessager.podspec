@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   s.homepage         = 'https://github.com/wei0121/BluetoothMessager'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'weiren' => 'xwr0121@163.com' }
+  s.author           = { 'weiren' => 'xwr0121@outlook.com' }
   s.source           = { :git => 'https://github.com/weiren/BluetoothMessager.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '11.0'
