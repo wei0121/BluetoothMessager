@@ -24,6 +24,17 @@ pod 'BluetoothMessager'
 
 weiren, xwr0121@163.com
 
+## Roadmap
+
+- Message Sender should always as central
+- Peripheral should send back a confirmation message to central when recevied a message
+- Message receiver should be selectable 
+- Queue for keeping messege with state (sending/received/success/failed)
+- Check maximum volume of message data
+- Message date format (String/Array/Dictionary)
+- Improve error handling
+- Imporve UI/UX
+
 ## License
 
 BluetoothMessager is available under the MIT license. See the LICENSE file for more info.
